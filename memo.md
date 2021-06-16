@@ -71,7 +71,6 @@ otherFunc x = ....
 ややこしいので整理
 
 カリー化
-こういうやつ
 ```javascript
 const sample = (x) => {
   return (y) => x * y;
@@ -79,10 +78,75 @@ const sample = (x) => {
 ```
 クロージャ -> 引数を関数内に閉じ込めるやつ(カリー化もクロージャではある)
 
-部分適応
-こういうやつ
+部分適応。haskellでは呼び出し時に引数が足りていなくても、errorにならない。
+引数が部分適応される。
 ```haskell
 add x y z = x * y * z
 add1 = add 1
 add1 3 4
+```
+
+filpBinaryArgs -> 受け渡す引数の順序を入れ替えて部分適応させることが出来る
+```haskell
+addressLetter name location = locationFunction name
+  where locationFunction = getLocationFunction location
+
+addressLetterV2 = flipBinaryArgs addressLetter
+addressLetterNY = addressLetterV2 "ny"
+*Main> addressLetterNY ("Bob", "Smith")
+```
+
+## Lesson6
+リストは再帰的 head, tail, [] -> 関数型プログラミングの中枢を成す
+リストの構成(: -> コンス(construct))
+1 : []
+
+全てのリストは空リストに対してのコンスで表現可能
+
+- :(コンス)
+- ++(append)
+- lst !! n(index_at)
+
+遅延評価
+[1 .. ]　としてもerrorにならない
+
+部分適応された関数が帰ってくる -> 引数1なので`catAt`で引数を用意する必要はない
+```haskell
+catAt1 n = "cat" !! n
+catAt2 = (!!) "cat"
+catAt3 = (!! 2) -- 右オペランドの部分適応がされて左オペランドの値を待機する
+-- catAt3 "cat"
+```
+
+中置演算
+```haskell
+elem 'c' "cat"
+'c' `elem` "cat"
+```
+
+## Lesson7
+再帰のルール
+- 最終目標を決定 -> 停止性の議論
+- 最終目標の場合にどうするか決める
+- 他の条件を洗い出す
+- 繰り返すごとに最終目標に近づくように
+
+```haskell
+-- eg: listの抽出
+lst = [1,2,3]
+head lst -- 1
+next = tail lst -- [2, 3]
+
+-- next
+head next -- 2
+tail -- [3]
+```
+
+強力なパターンマッチ。あくまで引数に対してのパターンマッチであり、ガード節のような条件式を用いることは出来ない
+-> 現状の対処としては関数のネストをして、引数経由でbooleanに変換するとか？
+
+haskellでは監修的にリストのパターンマッチを以下のように記述することが多いとのこと
+```haskell
+tail (x:xs) = xs
+tail [] = []
 ```
