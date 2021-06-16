@@ -11,3 +11,5 @@ urlBuilder url apiKey resource id = url ++ "/" ++ resource ++ "/" ++ id ++ "?tok
 bookIdBuiler id = urlBuilder "http://example.com" "1337hAsk3ll" "book" id
 
 subtract2 = flip (-) 2
+
+binaryPartialApplication func n = flip binaryPartialApplication n
