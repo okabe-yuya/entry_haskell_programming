@@ -1,3 +1,6 @@
+## Lesson1
+対話型replの起動: `ghci`
+
 ## Lesson2
 関数の振る舞いに関する制限
 - 関数は常に引数を受け取らなければならない
@@ -150,3 +153,18 @@ haskellでは監修的にリストのパターンマッチを以下のように�
 tail (x:xs) = xs
 tail [] = []
 ```
+
+## Lesson8
+:set +sとすることでrepl上で実行速度を計測することができる
+
+コンスでのリスト作成は x: []である必要がある
+```haskell
+myCycle (x:xs) = x:myCycle (x:xs)
+```
+
+reverseを作る場合には、[] : xとなるためコンスを用いることが出来ない
+```haskell
+myReverse [] = []
+myReverse (x:xs) = (myReverse xs) ++ [x]
+```
+
