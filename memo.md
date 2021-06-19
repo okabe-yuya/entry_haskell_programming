@@ -168,3 +168,33 @@ myReverse [] = []
 myReverse (x:xs) = (myReverse xs) ++ [x]
 ```
 
+## Lesson9
+高階関数 -> 厳密には別の関数を引数として受け取れる関数(eg: map, filter, reduce...)
+
+- foldl -> 左畳み込み eg: foldl (-) 0 [1,2,3,4] -> -10
+- foldr -> 右畳み込み eg: foldr (-) 0 [1,2,3,4] -> -2
+
+### foldrの動き
+```haskell
+-- eg: args (+) 0 [1,2,3,4,5]
+myFoldr (+) 0 (1:[2,3,4,5]) = (+) next 1
+next = myFoldr (+) 0 [2,3,4,5]
+
+myFoldr (+) 0 [2,3,4,5] = (+) next 2
+next = myFoldr (+) 0 [3,4,5]
+
+myFoldr (+) 0 [3,4,5] = (+) next 3
+next = myFoldr (+) 0 [4,5]
+
+myFoldr (+) 0 [4,5] = (+) next 4
+next = myFoldr (+) 0 [5]
+
+myFoldr (+) 0 [5] = (+) next 5
+next = myFoldr (+) 0 []
+
+myFoldr (+) 0 [] = 0
+
+0 + 5 + 4 + 3 + 2 + 1 という順序で処理が実行される
+```
+
+harmonicは全然分からんかった
