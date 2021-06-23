@@ -206,3 +206,33 @@ zip (cycle [1.0]) [1.0, 2.0 ..]
 -- [1.0]を作り続ける無限リスト
 -- [1.0, 2.0, 3.0, 4.0...]のように+1.0ずつを作り続ける無限リスト
 ```
+
+## Lesson10
+関数型プログラミングでのオブジェクトの概念の実装
+- クロージャを使って内部stateを保持させる
+- 値の更新があった時は、新たなクロージャを返して、stateが更新されたように見せかける
+- クロージャに関数を受け渡せるようにすることで、インスタンスの関数として振る舞わせることが出来る
+
+```haskell
+cup flOz = \message -> message flOz
+getOz aCup = aCup (\flOz -> flOz)
+-- Oz -> オンスのこと(単位)
+
+coffeeCup = cup 12
+-- \message -> message 12
+getOz coffeeCup
+-- getOz \message -> message 12 = \message -> message 12 (\flOz -> flOz)
+-- getOz \message -> message 12 = \flOz -> flOz 12
+-- 12がmessage経由で受け取った関数の引数に格納されるため、値の取得が出来る 
+```
+
+JavaScriptでの動作を見て納得
+```javascript
+const cup = (flOz) => (message) => message(flOz);
+const getOz = (aCup) => aCup((flOz) => flOz);
+
+const coffeeCup = cup(12);
+const ammount = getOz(coffeeCup);
+console.log(ammount); // 12
+```
+
