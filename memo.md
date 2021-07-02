@@ -79,9 +79,9 @@ const sample = (x) => {
   return (y) => x * y;
 };
 ```
-クロージャ -> 引数を関数内に閉じ込めるやつ(カリー化もクロージャではある)
+クロージャ -> 引数を関数内に閉じ込めるやつ(カリー化もクロージャを利用している) -> 閉じ込めた時点でクロージャ。
 
-部分適応。haskellでは呼び出し時に引数が足りていなくても、errorにならない。
+部分適応。haskellでは呼び出し時に引数が足りていなくても、errorにならない。(仕組みのこと)
 引数が部分適応される。
 ```haskell
 add x y z = x * y * z
@@ -236,3 +236,37 @@ const ammount = getOz(coffeeCup);
 console.log(ammount); // 12
 ```
 
+## Lesson11
+Hakellでは強力な型推論がサポートされている。
+
+```
+ポリモーフィズム（英: Polymorphism）とは、プログラミング言語の型システムの性質を表すもので、プログラミング言語の各要素（定数、変数、式、オブジェクト、関数、メソッドなど）についてそれらが複数の型に属することを許すという性質を指す。
+```
+
+関数における型シグネチャの記述
+
+`double :: Int -> Int`
+(eg: dobuleはInt型の引数を1つ受け取り、Int型の値を1つ返す)
+
+こんな感じの型指定もいける
+`read "6" :: Int` (readは文字列を別の型に変換する関数)
+
+関数を引数で受け取る際の型定義
+```haskell
+ifEven :: (Int -> Int) -> Int -> Int
+ifEven f n = if even n
+              then f n
+              else n
+```
+
+`TypeScript` での`T`のようなジェネリックのような型シグネチャ
+```haskell
+simple :: a -> b -> c -> Int
+simple a b n = ....
+```
+
+ここでaとbとcの型は異なる。aが2回登場する場合には型が揃っている必要がある
+```haskell
+simple :: a -> b -> a -> Int
+simple a b n = ....
+```
