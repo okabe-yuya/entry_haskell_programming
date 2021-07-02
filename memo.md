@@ -270,3 +270,14 @@ simple a b n = ....
 simple :: a -> b -> a -> Int
 simple a b n = ....
 ```
+
+filterの型シグネチャ
+```haskell
+filter :: (a -> Bool) -> [a] -> [a]
+```
+
+myFoldlの型シグネチャ
+```haskell
+myFoldl :: (a -> b) -> b -> [a] -> b
+myFoldl :: (a -> b -> a) -> a -> [b] -> a -- 正解はこれ！おしい！
+```
