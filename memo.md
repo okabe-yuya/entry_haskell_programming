@@ -329,3 +329,79 @@ class Num a where
   (-) :: a -> a -> a
   (*) :: a -> a -> a
 ```
+
+## Lesson14
+`class`がinterface(型クラス)に近いもの。カスタム型を定義する時に、継承することが出来る？？
+```haskell
+-- クラスのインスタンスの自動生成
+data Someone = A | B deriving (Show)
+```
+
+ポリモーフィズム -> 型によって振る舞いが変わる(string型では... int型では...)
+データコンストラクタ -> eg: `data Sex = Male | Female` の`Male`と`Female`がそれ
+
+継承していない型クラスへの振る舞いはインスタンスを定義して決める必要がある
+```haskell
+data SixSideDie = S1 | S2 | S3 | S4 | S5 | S6 deriving (Eq, Ord)
+
+-- 独自の振る舞いを定義することが出来る
+instance Show SixSideDie where
+  show S1 = "Ⅰ"
+  show S2 = "Ⅱ"
+  show S3 = "Ⅲ"
+  show S4 = "Ⅳ"
+  show S5 = "Ⅴ"
+  show S6 = "Ⅵ"
+```
+ 
+以下の場合だと、エラーになる。(インスタンスと継承している型クラスが重複したため)
+```haskell
+data SixSideDie = S1 | S2 | S3 | S4 | S5 | S6 deriving (Eq, Ord)
+
+-- 独自の振る舞いを定義することが出来る
+instance Show SixSideDie where
+  show S1 = "Ⅰ"
+  show S2 = "Ⅱ"
+  show S3 = "Ⅲ"
+  show S4 = "Ⅳ"
+  show S5 = "Ⅴ"
+  show S6 = "Ⅵ"
+
+instance Eq SixSideDie where
+  (==) S6 S6 = True
+  (==) S5 S5 = True
+  (==) S4 S4 = True
+  (==) S3 S3 = True
+  (==) S2 S2 = True
+  (==) S1 S1 = True
+  (==) _ _ = False
+```
+
+作成したカスタム型を持つ、変数の作成。showを継承していないと、出力出来ない
+```haskell
+-- いまさらだけど
+sample1 = One
+sample2 = Two
+```
+
+型クラスの定義 -> classの要求(スーパークラスの定義)
+EqはOrdのスーパークラスとなる
+```haskell
+class Eq a => Ord a where
+  compare :: a -> a -> Ordering
+  :
+  :
+
+-- EnumとEqがスーパークラス
+class (Enum a, Eq a) => Die a where
+  roll :: Int -> a
+```
+
+classを定義したら、振る舞いを定義する(インスタンス)必要がある
+```haskell
+class (Enum a, Eq a) => Die a where
+  roll :: Int -> a
+
+instance Die FiveSideDie where
+  roll n = toEnum (n `mod` 5)
+```
