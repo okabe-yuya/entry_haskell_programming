@@ -281,3 +281,51 @@ myFoldlの型シグネチャ
 myFoldl :: (a -> b) -> b -> [a] -> b
 myFoldl :: (a -> b -> a) -> a -> [b] -> a -- 正解はこれ！おしい！
 ```
+
+## Lesson12
+型シノニム -> 1つの型に対して別の名前を割り当てることが出来る
+
+```haskell
+type FirtName = String
+type LastName = String
+
+fullName :: FirstName -> LastName -> [Char]
+```
+
+任意の型の作成 -> 型シノニムでも可能だが、任意の型を作成すると強力なパターンマッチの力を引き出すことが出来る
+```haskell
+data RhType = Pos | Neg
+data ABOType = A | B | AB | O
+
+showRh :: RhType -> String
+showRh Pos = "+"
+showRh Neg = "-"
+
+showABO :: ABOType -> String 
+showABO A = "A"
+showABO B = "B"
+showABO AB = "AB"
+showABO O = "O"
+
+-- type constructor -> 複数の型を組み合わせる際には必要
+data BloodType = BloodType ABOType RhType
+showBloodType :: BloodType -> String
+showBloodType (BloodType abo rh) = showABO abo ++ showRh rh
+```
+
+レコード構文を用いることで、型の順序、getter, setterを自動生成してくれる
+
+## Lesson13
+型クラス -> 他言語における`interface`に似たもの。関数に共通の定義を与えることが出来る
+
+こういうやつ(`:t (+)`)
+`Num => a`
+
+深堀。
+```haskell
+:info Num
+class Num a where
+  (+) :: a -> a -> a
+  (-) :: a -> a -> a
+  (*) :: a -> a -> a
+```
