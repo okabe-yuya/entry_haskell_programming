@@ -357,16 +357,6 @@ instance Show SixSideDie where
 以下の場合だと、エラーになる。(インスタンスと継承している型クラスが重複したため)
 ```haskell
 data SixSideDie = S1 | S2 | S3 | S4 | S5 | S6 deriving (Eq, Ord)
-
--- 独自の振る舞いを定義することが出来る
-instance Show SixSideDie where
-  show S1 = "Ⅰ"
-  show S2 = "Ⅱ"
-  show S3 = "Ⅲ"
-  show S4 = "Ⅳ"
-  show S5 = "Ⅴ"
-  show S6 = "Ⅵ"
-
 instance Eq SixSideDie where
   (==) S6 S6 = True
   (==) S5 S5 = True
