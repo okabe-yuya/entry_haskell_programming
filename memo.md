@@ -395,3 +395,87 @@ class (Enum a, Eq a) => Die a where
 instance Die FiveSideDie where
   roll n = toEnum (n `mod` 5)
 ```
+
+## Lesson16
+代数的データ型 -> 他の型を組み合わせることで作成できる型
+ANDかORによって作成される
+- ANDで作られる型(String && String) -> 直積型(構造体とかJsonとかもそうだよ)
+  - 分子と分母で作られる分数
+  - 番地とストリート名として定義できる番地コード
+- ORで作られる型(String | Number) -> 直和型
+  - Bool = False | True
+
+直積型の呪い -> 階層的な設計を強いられる。共通化として継承を選択するしかない。 -> 増えれば増えるほど、共通化出来る項目は少なくなっていく
+
+```haskell
+data StoreItem = BookItem Book
+                  | RecordItem VinylRecord
+                  | ToyItem CollectibleToy
+                  | PamphletItem Pamphlet
+
+data Phamplet = Phamplet {
+  title :: String,
+  description :: String,
+  contact :: String,
+  phampletPrice :: Double,
+}
+```
+
+複数の項目がある場合(直積型)には、`BookItem Book`と宣言する。項目が少ないor1つの場合には`data Shape = Circle Radius`と出来る
+
+## Lesson17
+合成可能性 -> 似たような2つを組み合わせる
+関数合成 -> composeという高階関数(`.`)によって可能
+```haskell
+myLast :: [a] -> a
+-- myLastにて引数を受け取って関数に受け渡す記述が必要なくなる
+myLast = head . reverse
+```
+
+Semigroup良くわからん
+`Semigroup`というは`<>`だけを定義した型。型同士の結合のみをサポート。絵の具の色を組み合わせて別の色を作る概念と似ている。
+
+ガード節を使って、関数内の処理を切り分けることも可能
+```haskell
+myFunc a b | a == b = "goodmorning" | otherwise "hello"
+```
+
+Monoid -> 良くわからんけど、単位元を要求するSemigroup
+単位元
+- Interger = 0
+- List = []
+
+演算子しても結果に影響を与えないもの？
+
+すげぇ！単純な結合によってパワフルな結果を得られる。
+(ただし、実務レベルの場合にどこで使えばいいのか良く分かっていない)
+```haskell
+mconcat [coin, coin, coin]
+heads-heads-heads | 0.125
+heads-heads-tails | 0.125
+heads-tails-heads | 0.125
+heads-tails-tails | 0.125
+tails-heads-heads | 0.125
+tails-heads-tails | 0.125
+tails-tails-heads | 0.125
+tails-tails-tails | 0.125
+```
+
+`Semigroup`と`Monoid`の目的 -> 同じ型の2つのインスタンスを組み合わせて1つのインスタンスにすること
+`Monoid`の場合には単位元を要求する(eg: [1,2,3] ++ [] = [1,2,3])
+`Semigroup`は単位元を要求しない(eg: [1,2,3] ++ [4,5,6] = [1 .. 6])
+
+### q1
+```haskell
+data Color = Red | Yellow | Blue | Green | Purple | Orange | Brown | Clear deriving (Show, Eq)
+instance Semigroup Color where
+  (<>) Clear any = any
+  (<>) any Clear = any
+  :
+  :
+
+instance Monoid Color where
+  mempty = Clear
+  mappend c1 c2 = c1 <> c2
+```
+
