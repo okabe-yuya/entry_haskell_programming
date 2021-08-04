@@ -49,6 +49,6 @@ numOrZero (Just num) = num
 emptyDrawers :: [Maybe Organ] -> Int
 emptyDrawers organs = length (filter isNothing organs)
 
-maybeMap :: (a -> b) -> [Maybe a] -> [b]
-maybeMap _ [] = []
-maybeMap f lst = 
+maybeMap :: (a -> b) -> Maybe a -> Maybe b
+maybeMap _ Nothing = Nothing
+maybeMap f (Just val) = Just (f val)
