@@ -509,3 +509,39 @@ TSではあらゆる型をサポートするため`a`を引数として受け取
 ```haskell
 data TS a = TS [Int] [Maybe a]
 ```
+
+## Lesson21
+IOについて。HaskellではIOという型を提供している。
+IOとStringなどとの結合は不可能。
+
+```haskell
+IO () -- () は空のタプル。IOへのパラメーター
+```
+
+```haskell
+main :: IO ()
+main = do
+```
+これは関数ではない。意味のある値を返さないから。
+mainはI/Oアクションとして扱われる。
+I/OアクションはI/Oアクションを呼び出すことが可能。逆も然り。
+ただし関数からI/Oアクションを呼び出すことは出来ない(mainの中では可能 -> I/Oアクションだから)
+
+`a <- getLine`とすることで`IO String`を`main`の内部で`String`として扱うことが出来る
+
+## Lesson22
+main関数には制約がある?
+`IO ()`しか返せないっぽい
+
+なぜ`map_`はダメなのか。 -> `putStrLn`が`IO`だからだと考えられる。
+```haskell
+:info putStrLn
+putStrLn :: String -> IO ()     -- Defined in ‘System.IO’
+```
+
+こんなパターンマッチも出来るのか
+```haskell
+calc :: [String] -> Int
+calc (val1:"+":val2:_) = read val1 + read val2
+calc (val1:"*":val2:_) = read val1 * read val2
+```
