@@ -545,3 +545,12 @@ calc :: [String] -> Int
 calc (val1:"+":val2:_) = read val1 + read val2
 calc (val1:"*":val2:_) = read val1 * read val2
 ```
+
+## Lesson23
+`String`型だと効率よく処理が出来ない場合がある -> リンクリストであるため、indexが必ずしもメモリ上で連番にならない
+`Text`型であれば、配列として値が格納されるため高速化される場合がある & 遅延評価されない
+
+拡張機能のimportが可能
+```haskell
+{-# LANGUAGE extension #-}
+```
