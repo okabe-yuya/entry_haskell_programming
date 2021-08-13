@@ -554,3 +554,20 @@ calc (val1:"*":val2:_) = read val1 * read val2
 ```haskell
 {-# LANGUAGE extension #-}
 ```
+
+## Lesson24
+`System.IO`によってファイルの入力/出力を行う。
+遅延I/Oとして実行されるため、必ずしも上から下へと順に実行されるわけでは無い。
+そのためcloseをすることで、まだ評価がされていない変数が使用不可になったりするので、遅延I/Oは扱いが難しい。
+
+```haskell
+import System.IO
+
+main :: IO ()
+main = do
+  file <- openFile "hoge.txt" ReadMode
+  input <- hGetContents file
+  hClose fiie -- closeは直ちに実行されるためfileへの参照が無くなる(参照という言葉が正確かは不明)
+
+  putStrLn input -- すでにcloseされてしまっているためエラーとなる -> 遅延評価のため、ここにきて初めてinputは評価される
+```
