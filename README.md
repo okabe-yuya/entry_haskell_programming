@@ -38,7 +38,9 @@ Immediately Invoked Function Expression
 ```haskell
 inc n = n + 1
 inc 2 * 3
--- 3 * 3 = 9```
+-- 3 * 3 = 9
+```
+
 ```haskell
 -- 関数を引数に
 ifEven myFunc x = if then x
@@ -51,7 +53,9 @@ square n = n ^ 2
 
 ifEvenInc n = ifEven inc n
 ifEvenDouble n = ifEven double n
-ifEvenSquare n = ifEven square n```
+ifEvenSquare n = ifEven square n
+```
+
 戻り値として関数を返す
 ```haskell
 getLocationFunction location = case location of
@@ -88,6 +92,8 @@ add x y z = x * y * z
 add1 = add 1
 add1 3 4
 ```
+
+カリー化(引数を部分適応出来る状態にした関数) -> カリー化された関数を用いて部分適応がされる -> 🎉
 
 filpBinaryArgs -> 受け渡す引数の順序を入れ替えて部分適応させることが出来る
 ```haskell
@@ -571,3 +577,9 @@ main = do
 
   putStrLn input -- すでにcloseされてしまっているためエラーとなる -> 遅延評価のため、ここにきて初めてinputは評価される
 ```
+
+## Lesson25
+ByteStringはByteの配列であり、String
+StringはCharのリスト
+
+特になし。Byte操作する際に参照すればいいかなという程度
