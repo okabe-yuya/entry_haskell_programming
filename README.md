@@ -583,3 +583,64 @@ ByteStringはByteの配列であり、String
 StringはCharのリスト
 
 特になし。Byte操作する際に参照すればいいかなという程度
+
+## Lesson26
+演習のため省略
+
+## Lesson27
+Functor, Applicative, Monadは何をするのか
+(String) -> (Int) に変換する関数がある場合に
+(Maybe String) -> (Maybe Int)...のような関数を全ての定義された関数に対してMaybeでラップされた関数を用意するのはしんどい。
+なので、Functor, Applicative, Monadを使って楽にしようという考えだと思われる。
+
+Functor: String -> Int
+コンテキストの内部に対して関数を適応させることが出来る。
+eg: Maybe Int -> Maybe Int
+```haskell
+sample :: Maybe Int
+sample = Just 999
+
+plus1 :: Int -> Int
+plus1 n = n + 1
+
+fmap plus1 sample -- Just 1000
+```
+
+Maybeに対するFunctorのinterface
+```haskell
+instance Functor Maybe where
+  fmap func (Just n) = Just (func n)
+  fmap func Nothing = Nothing
+```
+
+二項演算子を用いる
+```haskell
+successStr :: Maybe String
+successStr = show <$> (Just 6)
+
+-- Main> successStr
+-- Just "6"
+```
+
+以下の2つは同じ動作をする
+```
+allParts = snd <$> Map.toList partsDB
+allParts = fmap snd Map.toList partsDB
+```
+
+Functor
+- List
+- Map
+- Maybe
+- IO
+に対して定義されている。それぞれの型で振る舞いが変わる
+> https://hackage.haskell.org/package/base-4.15.0.0/docs/GHC-Base.html
+
+Functorを使うことで、IOを取り出すことが出来なくても、IOの値をコンテキスト内部で更新することが出来る
+```haskell
+action :: IO Int -> IO String
+action ioInt = fmap show ioInt
+```
+
+したがって、コンテキストを持つ型に対してFunctorは非常に強力
+fmapに渡す関数を作る時はコンテストがない状態をイメージすると分かりやすい。(当然だけど)
