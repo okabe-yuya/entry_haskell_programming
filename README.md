@@ -644,3 +644,49 @@ action ioInt = fmap show ioInt
 
 したがって、コンテキストを持つ型に対してFunctorは非常に強力
 fmapに渡す関数を作る時はコンテストがない状態をイメージすると分かりやすい。(当然だけど)
+
+## Lesson28
+Applicative -> 長い計算を結合することができる。Functorで出来ないことを解決するためにある
+
+Maybeが混在する場合に、Maybeの連続に対して処理を割り当てたい時がある
+```haskell
+haversineMaybe :: Maybe LatLong -> Maybe LatLong -> Maybe Double
+haversineMaybe Nothing _ = Nothing
+haversineMaybe _ Nothing = Nothing
+haversineMaybe (Just l1) (Just l2) = Just(haversine l1 l2)
+```
+
+しかし、同じような関数全てにラッパーを定義する必要が発生する。
+別途、IOのようなコンテキストにはラッパーをまた定義しなければならない。
+
+fmapの制限 -> 引数が1つの関数にしか対応できない。複数の引数を持つ場合に呼び出せない
+
+```haskell
+applicative :: f (a -> b) -> f a -> f b
+```
+
+例:
+```haskell
+start = Map.lookup "Carcosa" locationDB
+end = Map.lookup "Innsmouth" locationDB
+haversine <$> start <*> end
+
+-- haversine <$> start は部分適応がされてMaybe Doubleが返る
+-- partialHaversine :: Maybe Double -> Maybe Double
+-- partialHaversine <$> end と同じ状態になる
+```
+
+要するに引数への部分適応を行った関数に対してチェインして引数を受け渡して処理するための関数を持つクラスがApplicative
+
+Applicativeによってこれがこうじゃ
+```haskell
+haversineIO :: IO LatLong -> IO LatLong -> IO Double
+haversineIO v1 v2 = do
+  val1 <- v1
+  val2 <- v2
+  let distance = haversine val1 val2
+  return distance
+
+haversineIO2 :: IO LatLong -> IO LatLong -> IO Double
+haversineIO2 v1 v2 = haversine <$> v1 <*> v2
+```
