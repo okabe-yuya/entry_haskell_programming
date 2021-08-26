@@ -690,3 +690,56 @@ haversineIO v1 v2 = do
 haversineIO2 :: IO LatLong -> IO LatLong -> IO Double
 haversineIO2 v1 v2 = haversine <$> v1 <*> v2
 ```
+
+## Lesson29
+```haskell
+*Main T> :info <*>
+type Applicative :: (* -> *) -> Constraint
+class Functor f => Applicative f where
+  ...
+  (<*>) :: f (a -> b) -> f a -> f b
+  ...
+```
+
+pureメソッド -> コンテキストの内部に通常の値を格納してくれる
+```haskell
+class Functor f => Applicative f where
+  pure :: a -> f a
+```
+
+```haskell
+*Main> :t pure "Hello World!" :: IO String
+:: IO String
+```
+
+つまり通常の型の値をコンテキストの世界へ導いてくれるのだ
+
+Listはコンテナでありコンテキスト。コンテナとコンテキストの違いは...??
+
+以下は同義らしい
+```haskell
+*Main> fmap (+) [1000, 2000, 3000] <*> [500, 20000]
+[1500,21000,2500,22000,3500,23000]
+
+*Main> (+) <$> [1000, 2000, 3000] <*> [500, 2000]
+[1500,3000,2500,4000,3500,5000]
+
+*Main> pure (+) <*> [1000, 2000, 3000] <*> [500, 20000]
+[1500,21000,2500,22000,3500,23000]
+```
+
+pureはApplicateの型クラスへ強制変換している??
+```haskell
+*Main> :t pure (+)
+pure (+) :: (Prelude.Applicative f, Num a) => f (a -> a -> a)
+```
+
+- コンテナ: 見れば何の値が入っているか分かる。何らかの要素を持つか、空
+- コンテキスト: 何らかの値が入っているかもしれない。可能性の集合
+
+Listを非決定論の視点で捉えるとコンテキストして扱うことになる。
+```haskell
+(+) -- 決定論
+pure (+) -- 非決定論
+```
+
