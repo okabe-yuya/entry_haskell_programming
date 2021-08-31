@@ -743,3 +743,54 @@ Listを非決定論の視点で捉えるとコンテキストして扱うこと�
 pure (+) -- 非決定論
 ```
 
+## Lesson30
+ようやくMonad。
+このような場合にどうなるか
+
+```haskell
+type UserName = String
+type PlayerCredits = Int
+
+Maybe UserName -> (UserName -> Maybe PlayerCredits) -> Maybe PlayerCredits
+```
+
+```haskell
+(<$>) :: Functor f => (a -> b) -> f a -> f b
+(<*>) :: Applicative f => f (a -> b) -> f a -> f b
+pure :: Applicative f => a -> f a
+```
+
+これだとMaybeのような単純にコンテキストを取り出せる型にはラップ関数を作れば対応出来るが、
+IOのようなコンテキスト内の値を操作するのが難しい(FunctorとApplicativeを使う必要がある)場合には難しい。
+
+```haskell
+altLookupCredits :: Maybe UserName -> Maybe PlayerCredits
+altLookupCredits Nothing = Nothing
+altLookupCredits (Just name) = lookupCredits name
+```
+
+そのためにMonadが必要！
+
+bind
+```haskell
+(>>=) :: Monad m => m a -> (a -> m b) -> m b
+```
+
+```haskell
+lookupUserName :: GamerId -> Maybe UserName
+lookupUserName id = Map.lookup id userNameDB
+
+lookupCredits :: UserName -> Maybe PlayerCredits
+lookupCredits name = Map.lookup name creditDB
+
+monadCreditsFromId :: GamerId -> Maybe PlayerCredits
+monadCreditsFromId id = lookupUserName id >>= lookupCredits
+```
+
+つまり、コンテキストから値を無理矢理取り出して、その値を次の関数に受け渡していくのがMonadだ
+
+```haskell
+(>>=) :: m a -> (a -> m b) -> m b -- コンテキストから取り出した値を関数に適応させる
+(>>) :: m a -> m b -> m b -- 一つ目の引数のコンテキストを破棄する eg: putStrLn >> getLine
+return :: a -> m a -- Applicativeのpureと同じ。歴史的背景から別名が付いている
+```
