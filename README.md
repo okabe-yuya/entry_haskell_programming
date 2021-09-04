@@ -848,3 +848,8 @@ doublerList list = do
   let applied = doubler val
   return applied
 ```
+
+`Monad`を受け取ることを定義すれば、`IO`, `Maybe`, `List`, `Map` 全ての場合で同じ関数を適応することが出来る...やばい。
+fmapでは引数1つの場合にしか対応出来ない。
+Applicativeはコンテキスト内部の関数への部分適応と実行が出来る。
+Monadは関数を結合する。またコンテキストから値を取り出す。モナドは関数の適応結果がモナドであっても問題なし。
