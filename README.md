@@ -662,6 +662,7 @@ haversineMaybe (Just l1) (Just l2) = Just(haversine l1 l2)
 fmapの制限 -> 引数が1つの関数にしか対応できない。複数の引数を持つ場合に呼び出せない
 
 ```haskell
+fmap :: (a -> b) -> f a -> f b
 applicative :: f (a -> b) -> f a -> f b
 ```
 
@@ -793,4 +794,57 @@ monadCreditsFromId id = lookupUserName id >>= lookupCredits
 (>>=) :: m a -> (a -> m b) -> m b -- コンテキストから取り出した値を関数に適応させる
 (>>) :: m a -> m b -> m b -- 一つ目の引数のコンテキストを破棄する eg: putStrLn >> getLine
 return :: a -> m a -- Applicativeのpureと同じ。歴史的背景から別名が付いている
+```
+
+## Lesson31
+doはmonadの糖衣構文(シンタックスシュガー)であるため、以下の3つは同義である。
+
+```haskell
+helloPerson :: String -> String
+helloPerson name = mconcat ["Hello ", name, "!"]
+
+main :: IO ()
+main = do
+  name <- getLine
+  let statement = helloPerson name
+  putStrLn statement
+
+main :: IO ()
+main = do
+  getLine >>= (\name -> (\statement -> putStrLn statement) (helloPerson name))
+
+-- 自分的にはこちらの方が無名関数をネストするよりは分かりやすい
+main :: IO ()
+main = do
+  getLine >>= (\name -> return (helloPerson name)) >>= (\statement -> putStrLn statement)
+```
+
+echoの場合
+```haskell
+echo :: IO ()
+echo = getLine  >>= putStrLn
+
+main :: IO ()
+main = do
+  input <- getLine
+  putStrLn input
+```
+
+つまり`do`内の`<-`とMonadの`>>=`はコンテキストから値を取り出すという意味では似た動きをする。
+
+`do`は`List`であっても有効(Monadのインスタンスであるため)
+複雑な処理をする場合には`map`などでは適応しにくい処理も`do`で記述することが出来る
+
+```haskell
+list :: [Int]
+list = [1,2,3,4,5]
+
+doubler :: Int -> Int
+doubler n = n * 2
+
+doublerList :: [Int] -> [Int]
+doublerList list = do
+  val <- list
+  let applied = doubler val
+  return applied
 ```
