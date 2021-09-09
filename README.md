@@ -853,3 +853,33 @@ doublerList list = do
 fmapでは引数1つの場合にしか対応出来ない。
 Applicativeはコンテキスト内部の関数への部分適応と実行が出来る。
 Monadは関数を結合する。またコンテキストから値を取り出す。モナドは関数の適応結果がモナドであっても問題なし。
+
+## Lesson32
+リストモナドとはリストを簡単に生成するために便利
+
+```haskell
+powersOfTwo :: Int -> [Int]
+powersOfTwo n = do
+  value <- [ 1..n ]
+  return (2 ^ value)
+```
+
+guardは実は純粋な関数。関数の戻り値がTrueにならない値を取り除く
+
+```haskell
+import Control.Monad
+
+filterGuard :: (a -> Bool) -> [a] -> [a]
+filterGuard func lst = do
+  value <- lst
+  guard(func value)
+  return value
+```
+
+pythonがHaskellから輸入したリスト内包表記ももちろん、使える
+```haskell
+powersOfTwo2 :: Int -> [Int]
+powersOfTwo2 n = [2 ^ value | value <- [1 .. n]]
+```
+
+`>>=`, `>>`, `return`を実装出来ればリスト内包は他言語でも構築出来るらしい
