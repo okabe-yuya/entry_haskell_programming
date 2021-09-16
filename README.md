@@ -883,3 +883,34 @@ powersOfTwo2 n = [2 ^ value | value <- [1 .. n]]
 ```
 
 `>>=`, `>>`, `return`を実装出来ればリスト内包は他言語でも構築出来るらしい
+
+## Lesson33
+演習のためほとんどメモすることはなし
+
+元々リスト(Monadのインスタンス)として定義されていた関数は簡単にMonad型に移行することが出来る。
+この場合は`map`や`filter`を使っているとまずい。Monadとして処理されていることが前提
+```haskell
+-- _select :: (a -> b) -> [a] -> [b]
+_select :: Monad m => (a -> b) -> m a -> m b
+_select prop vals = do prop <$> vals
+```
+
+Monadを引数に受け取ることも出来る(当然だけど)
+```haskell
+data HINQ m a b = HINQ (m a -> m b) (m a) (m a -> m a) | HINQ_ (m a -> m b) (m a)
+
+query1 :: HINQ [] (Teacher, Course) Name
+```
+ここでは空配列ではなく、Listクラス型を第1引数に渡す。結果として`HINQ`は以下の様になる。
+
+```haskell
+HINQ ([a] -> [b]) ([a]) ([a] -> [a])
+```
+
+`select * FROM A WHERE A.id == 1`という従来のSQLの動きが上記の型定義で表現されている
+
+```haskell
+([a] -> [b]) -- SELECT
+([a]) -- FROM
+([a] -> [a]) -- WHERE
+```
