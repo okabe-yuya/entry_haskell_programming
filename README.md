@@ -914,3 +914,25 @@ HINQ ([a] -> [b]) ([a]) ([a] -> [a])
 ([a]) -- FROM
 ([a] -> [a]) -- WHERE
 ```
+
+## Lesson34
+モジュール化の技法 -> 名前空間が衝突してしまうので、モジュール単位で名前空間を区切る必要がある
+
+`module Main`とすると必ず`main`関数を作成する必要がある？
+```haskell
+module Main where
+```
+
+の場合には`main`関数がないとコンパイル出来ない
+
+```haskell
+import Data.Char (toLower, isSpace, isPunctuation)
+```
+モジュールから特定の関数だけをimportする目的は不用意な名前の衝突を避けるため。
+Erlangを触った時にもめんどいなぁと思ったけど、意図が分かった
+
+```haskell
+stack ghc Main.hs
+```
+
+での関連モジュールのimportはデフォルトでは直下ディレクトリが対象っぽい
