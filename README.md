@@ -936,3 +936,12 @@ stack ghc Main.hs
 ```
 
 での関連モジュールのimportはデフォルトでは直下ディレクトリが対象っぽい
+
+## Lesson35
+stack new にてプロジェクトの新規作成が出来る
+なぜか`.cabal`ファイルへの書き込みができても、setupやbuild時に記述したものが消えてしまう
+理由は不明。
+
+> https://qiita.com/ogata-k/items/2b21326b2b7351bfc28c
+
+どうやら必要がないと判断されてようで、消えている。なぜ
